@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -64,5 +65,31 @@ public class CardService {
         }
         cardRepository.save(card);
         return new ApiResponse("Card Edited!", true);
+    }
+
+    public ApiResponse getOne(Integer id) {
+        Optional<Card> optionalCard = cardRepository.findById(id);
+        if (!optionalCard.isPresent()) {
+            return new ApiResponse("Bunday id li mijoz yoq", false);
+        }
+        Card card = optionalCard.get();
+        return new ApiResponse("Is Success!!!", true, card);
+    }
+
+    public ApiResponse getAll() {
+        List<Card> cardList = cardRepository.findAll();
+        if (cardList.isEmpty()) {
+            return new ApiResponse("Cards not found", false);
+        }
+        return new ApiResponse("Success", true, cardList);
+    }
+
+    public ApiResponse deleted(Integer id) {
+        Optional<Card> optionalCard = cardRepository.findById(id);
+        if (!optionalCard.isPresent()) {
+            return new ApiResponse("Cards not found", false);
+        }
+        cardRepository.deleteById(id);
+        return new ApiResponse("Deleted card", true);
     }
 }
